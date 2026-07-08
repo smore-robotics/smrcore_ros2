@@ -1,0 +1,7 @@
+site_name: SMRcore ROS 2
+docs_dir: docs
+nav:
+  - 首页: index.md
+  - 快速开始: getting-started.md
+  - 架构: architecture.md
+  - ros2_control: ros2-control.md

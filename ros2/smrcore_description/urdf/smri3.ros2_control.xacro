@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:macro name="smri3_ros2_control" params="robot_ip">
+    <ros2_control name="smrcore_hardware" type="system">
+      <hardware>
+        <plugin>smrcore_hardware/SMRcoreSystemInterface</plugin>
+        <param name="robot_ip">${robot_ip}</param>
+      </hardware>
+
+      <joint name="joint1">
+        <command_interface name="position"/>
+        <command_interface name="velocity"/>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+        <state_interface name="effort"/>
+      </joint>
+      <joint name="joint2">
+        <command_interface name="position"/>
+        <command_interface name="velocity"/>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+        <state_interface name="effort"/>
+      </joint>
+      <joint name="joint3">
+        <command_interface name="position"/>
+        <command_interface name="velocity"/>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+        <state_interface name="effort"/>
+      </joint>
+      <joint name="joint4">
+        <command_interface name="position"/>
+        <command_interface name="velocity"/>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+        <state_interface name="effort"/>
+      </joint>
+      <joint name="joint5">
+        <command_interface name="position"/>
+        <command_interface name="velocity"/>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+        <state_interface name="effort"/>
+      </joint>
+      <joint name="joint6">
+        <command_interface name="position"/>
+        <command_interface name="velocity"/>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+        <state_interface name="effort"/>
+      </joint>
+    </ros2_control>
+  </xacro:macro>
+</robot>
