@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <robot name="smri3" xmlns:xacro="http://www.ros.org/wiki/xacro">
   <xacro:arg name="robot_ip" default=""/>
+  <xacro:arg name="hardware_backend" default="real"/>
+  <xacro:arg name="log_passthrough_commands" default="false"/>
 
   <xacro:include filename="$(find smrcore_description)/urdf/materials.xacro"/>
   <xacro:include filename="$(find smrcore_description)/urdf/smrcore_macro.xacro"/>
@@ -32,42 +34,42 @@
   <xacro:smrcore_link name="link6" radius="0.035" length="0.12" color="smrcore_light"/>
   <link name="tool0"/>
 
-  <joint name="joint1" type="revolute">
+  <joint name="base_joint" type="revolute">
     <parent link="base_link"/>
     <child link="link1"/>
     <origin xyz="0 0 0.08" rpy="0 0 0"/>
     <axis xyz="0 0 1"/>
     <limit lower="-6.283185307" upper="6.283185307" effort="200" velocity="3.14"/>
   </joint>
-  <joint name="joint2" type="revolute">
+  <joint name="shoulder_joint" type="revolute">
     <parent link="link1"/>
     <child link="link2"/>
     <origin xyz="0 0 0.25" rpy="0 1.570796327 0"/>
     <axis xyz="0 1 0"/>
     <limit lower="-6.283185307" upper="6.283185307" effort="200" velocity="3.14"/>
   </joint>
-  <joint name="joint3" type="revolute">
+  <joint name="elbow_joint" type="revolute">
     <parent link="link2"/>
     <child link="link3"/>
     <origin xyz="0 0 0.30" rpy="0 0 0"/>
     <axis xyz="0 1 0"/>
     <limit lower="-6.283185307" upper="6.283185307" effort="200" velocity="3.14"/>
   </joint>
-  <joint name="joint4" type="revolute">
+  <joint name="wrist1_joint" type="revolute">
     <parent link="link3"/>
     <child link="link4"/>
     <origin xyz="0 0 0.28" rpy="1.570796327 0 0"/>
     <axis xyz="1 0 0"/>
     <limit lower="-6.283185307" upper="6.283185307" effort="120" velocity="3.14"/>
   </joint>
-  <joint name="joint5" type="revolute">
+  <joint name="wrist2_joint" type="revolute">
     <parent link="link4"/>
     <child link="link5"/>
     <origin xyz="0 0 0.22" rpy="0 1.570796327 0"/>
     <axis xyz="0 1 0"/>
     <limit lower="-6.283185307" upper="6.283185307" effort="120" velocity="3.14"/>
   </joint>
-  <joint name="joint6" type="revolute">
+  <joint name="wrist3_joint" type="revolute">
     <parent link="link5"/>
     <child link="link6"/>
     <origin xyz="0 0 0.16" rpy="1.570796327 0 0"/>
@@ -80,5 +82,5 @@
     <origin xyz="0 0 0.12" rpy="0 0 0"/>
   </joint>
 
-  <xacro:smri3_ros2_control robot_ip="$(arg robot_ip)"/>
+  <xacro:smri3_ros2_control robot_ip="$(arg robot_ip)" hardware_backend="$(arg hardware_backend)" log_passthrough_commands="$(arg log_passthrough_commands)"/>
 </robot>

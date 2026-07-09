@@ -1,48 +1,62 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
-  <xacro:macro name="smri3_ros2_control" params="robot_ip">
+  <xacro:macro name="smri3_ros2_control" params="robot_ip hardware_backend:=real log_passthrough_commands:=false">
     <ros2_control name="smrcore_hardware" type="system">
-      <hardware>
-        <plugin>smrcore_hardware/SMRcoreSystemInterface</plugin>
-        <param name="robot_ip">${robot_ip}</param>
-      </hardware>
+      <xacro:if value="${hardware_backend == 'real'}">
+        <hardware>
+          <plugin>smrcore_hardware/SMRcoreSystemInterface</plugin>
+          <param name="robot_ip">${robot_ip}</param>
+          <param name="log_passthrough_commands">${log_passthrough_commands}</param>
+        </hardware>
+      </xacro:if>
+      <xacro:if value="${hardware_backend == 'mock'}">
+        <hardware>
+          <plugin>mock_components/GenericSystem</plugin>
+          <param name="calculate_dynamics">false</param>
+        </hardware>
+      </xacro:if>
+      <xacro:if value="${hardware_backend == 'gazebo'}">
+        <hardware>
+          <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+        </hardware>
+      </xacro:if>
 
-      <joint name="joint1">
+      <joint name="base_joint">
         <command_interface name="position"/>
         <command_interface name="velocity"/>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
         <state_interface name="effort"/>
       </joint>
-      <joint name="joint2">
+      <joint name="shoulder_joint">
         <command_interface name="position"/>
         <command_interface name="velocity"/>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
         <state_interface name="effort"/>
       </joint>
-      <joint name="joint3">
+      <joint name="elbow_joint">
         <command_interface name="position"/>
         <command_interface name="velocity"/>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
         <state_interface name="effort"/>
       </joint>
-      <joint name="joint4">
+      <joint name="wrist1_joint">
         <command_interface name="position"/>
         <command_interface name="velocity"/>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
         <state_interface name="effort"/>
       </joint>
-      <joint name="joint5">
+      <joint name="wrist2_joint">
         <command_interface name="position"/>
         <command_interface name="velocity"/>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
         <state_interface name="effort"/>
       </joint>
-      <joint name="joint6">
+      <joint name="wrist3_joint">
         <command_interface name="position"/>
         <command_interface name="velocity"/>
         <state_interface name="position"/>

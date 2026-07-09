@@ -1,0 +1,119 @@
+<mujoco model="SMR-i3-URDF-000">
+  <compiler angle="radian" meshdir="../meshes" autolimits="true" />
+  <option integrator="implicitfast" />
+  <default>
+    <default class="smr">
+      <material specular="0.5" shininess="0.25" />
+      <joint armature="0.00001" />
+      <!-- CSP: 位置 PD 伺服执行器（actuator group=0；与 geom group=2/3 是不同字段，无冲突） -->
+      <default class="smr/csp">
+        <general gaintype="fixed" biastype="affine" ctrlrange="-6.2831 6.2831" gainprm="2000" biasprm="0 -2000 -400" forcerange="-150 150" group="0" />
+      </default>
+      <!-- CST: 直接力矩注入执行器（actuator group=1） -->
+      <default class="smr/cst">
+        <motor ctrlrange="-150 150" forcerange="-150 150" group="1" />
+      </default>
+      <default class="visual">
+        <geom type="mesh" contype="0" conaffinity="0" group="2" />
+      </default>
+      <default class="collision">
+        <geom type="capsule" group="3" rgba="0.5 0.5 0.5 0.9" />
+      </default>
+      <site size="0.001" rgba="0.5 0.5 0.5 0.3" group="4" />
+    </default>
+  </default>
+  <asset>
+    <material class="smr" name="linkblue" rgba="0.792157 0.819608 0.933333 1" />
+    <material class="smr" name="flangegray" rgba="0.898039 0.917647 0.929412 1" />
+    <mesh name="base_link" file="base_link.STL" />
+    <mesh name="shoulder_link" file="shoulder_link.STL" />
+    <mesh name="upper_arm_link" file="upper_arm_link.STL" />
+    <mesh name="lower_arm_link" file="lower_arm_link.STL" />
+    <mesh name="proximal_wrist_link" file="proximal_wrist_link.STL" />
+    <mesh name="distal_wrist_link" file="distal_wrist_link.STL" />
+    <mesh name="flange_link" file="flange_link.STL" />
+  </asset>
+  <worldbody>
+    <light name="top" pos="0 0 2" dir="0 0 -1" diffuse="0.5 0.5 0.5" />
+    <light name="spotlight" mode="targetbodycom" target="distal_wrist_link" pos="0 -1 2" diffuse="0.8 0.8 0.8" />
+    <geom name="floor" type="plane" size="2 2 0.05" rgba="0.5 0.5 0.5 1" friction="1 0.005 0.0001" />
+    <body name="base_link" childclass="smr">
+      <inertial pos="0.0012271 3.5719e-05 0.067242" quat="0.999238 -0.00447993 0.038768 -0.000376063" mass="2.3653" diaginertia="0.00428608 0.00418193 0.0038568" />
+      <geom class="visual" mesh="base_link" material="linkblue" />
+      <geom class="collision" size="0.058 0.08" pos="0 0 0.10" />
+      <body name="shoulder_link" pos="0 0 0.1245">
+        <inertial pos="-0.014568 -3.2077e-05 0.055988" quat="0.00414817 0.850649 0.00044744 0.525718" mass="2.1469" diaginertia="0.00301085 0.00282911 0.00240014" />
+        <joint name="base_joint" pos="0 0 0" axis="0 0 1" range="-6.28319 6.28319" damping="1.37712" frictionloss="2.12262" />
+        <geom class="visual" mesh="shoulder_link" material="linkblue" />
+        <geom class="collision" size="0.052 0.05" pos="0 -0.04 0.06" quat="0.707 0.707 0 0" />
+        <body name="upper_arm_link" pos="0 -0.0462 0.061" quat="0.707105 0.707108 0 0">
+          <inertial pos="-0.1221 2.3317e-06 0.043604" quat="2.5337e-05 0.711378 9.47724e-06 0.70281" mass="1.2763" diaginertia="0.0143619 0.013496 0.00153382" />
+          <joint name="shoulder_joint" pos="0 0 0" axis="0 0 1" range="-4.36332 1.22173" damping="1.43903" frictionloss="1.66347" />
+          <geom class="visual" mesh="upper_arm_link" material="linkblue" />
+          <geom class="collision" size="0.048 0.13" pos="-0.13 0 0.05" quat="0.707 0 0.707 0" />
+          <body name="lower_arm_link" pos="-0.263 0 0">
+            <inertial pos="-0.070306 0.00048901 -0.021154" quat="0.518688 0.481116 0.490256 0.509057" mass="3.1461" diaginertia="0.0134031 0.013257 0.00346841" />
+            <joint name="elbow_joint" pos="0 0 0" axis="0 0 1" range="-2.75762 2.75762" damping="1.61981" frictionloss="2.73848" />
+            <geom class="visual" mesh="lower_arm_link" material="linkblue" />
+            <geom class="collision" size="0.042 0.11" pos="-0.11 0 -0.043" quat="0.707 0 0.707 0" />
+            <geom class="collision" size="0.05 0.02" pos="0.00 0.00 0.00" />
+            <body name="proximal_wrist_link" pos="-0.236 0 0.0158">
+              <inertial pos="8.7148e-05 -0.0025009 0.040305" quat="0.389377 0.590235 0.39591 0.585887" mass="0.7728" diaginertia="0.000529708 0.000365893 0.000356919" />
+              <joint name="wrist1_joint" pos="0 0 0" axis="0 0 1" range="-4.71239 1.5708" damping="0.22439" frictionloss="0.50985" />
+              <geom class="visual" mesh="proximal_wrist_link" material="linkblue" />
+              <geom class="collision" size="0.04 0.035" pos="0 0 -0.02" />
+              <body name="distal_wrist_link" pos="0 -0.038 0.041" quat="0.707105 0.707108 0 0">
+                <inertial pos="-7.8317e-05 0.0024461 0.039842" quat="0.587018 0.394352 0.581325 0.402441" mass="0.7827" diaginertia="0.000532619 0.000368023 0.000354807" />
+                <joint name="wrist2_joint" pos="0 0 0" axis="0 0 1" range="-2.26893 2.26893" damping="0.19644" frictionloss="0.51623" />
+                <geom class="visual" mesh="distal_wrist_link" material="linkblue" />
+                <geom class="collision" size="0.038 0.032" pos="0 0.0 -0.03" />
+                <body name="flange_link" pos="0 0.0385 0.041" quat="0.707105 -0.707108 0 0">
+                  <inertial pos="0.00029338 -0.00022112 0.01719" quat="0.498157 0.504719 -0.495798 0.501282" mass="0.17609" diaginertia="0.000118562 6.42934e-05 6.29627e-05" />
+                  <joint name="wrist3_joint" pos="0 0 0" axis="0 0 1" range="-6.28319 6.28319" damping="0.20446" frictionloss="0.56759" />
+                  <geom class="visual" mesh="flange_link" material="flangegray" />
+                  <geom class="collision" size="0.038 0.035" pos="0 0 -0.028" quat="1 0 0 0" />
+                  <site name="attachment_site" pos="0 0 0.0315" />
+                  <!-- payload 占位 body：V1 由 MujocoSixAxisMotors::SetPayload 运行时
+                       改写 body_mass / body_ipos / body_inertia / body_iquat；
+                       初值为 epsilon，对物理无可观影响。pos 与 attachment_site
+                       完全一致，确保局部 frame 与 Pinocchio tool0_link frame
+                       重合，payload.com 直接对应 body_ipos。详见
+                       docs/payload_dynamics_plan.md §5.1。-->
+                  <body name="payload" pos="0 0 0.0315" quat="1 0 0 0">
+                    <inertial pos="0 0 0" mass="1e-6"
+                              diaginertia="1e-9 1e-9 1e-9" />
+                  </body>
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+  <contact>
+    <exclude body1="base_link" body2="shoulder_link" />
+    <exclude body1="base_link" body2="upper_arm_link" />
+  </contact>
+  <actuator>
+    <!-- CSP 组（位置伺服）：与原行为完全一致 -->
+    <general class="smr/csp" name="csp_base"     joint="base_joint" />
+    <general class="smr/csp" name="csp_shoulder" joint="shoulder_joint" />
+    <general class="smr/csp" name="csp_elbow"    joint="elbow_joint" />
+    <general class="smr/csp" name="csp_wrist1"  joint="wrist1_joint" />
+    <general class="smr/csp" name="csp_wrist2"  joint="wrist2_joint" />
+    <general class="smr/csp" name="csp_wrist3"  joint="wrist3_joint" />
+    <!-- CST 组（直接力矩注入）：FreeDrive 真力矩仿真路径 -->
+    <motor   class="smr/cst" name="cst_base"     joint="base_joint" />
+    <motor   class="smr/cst" name="cst_shoulder" joint="shoulder_joint" />
+    <motor   class="smr/cst" name="cst_elbow"    joint="elbow_joint" />
+    <motor   class="smr/cst" name="cst_wrist1"  joint="wrist1_joint" />
+    <motor   class="smr/cst" name="cst_wrist2"  joint="wrist2_joint" />
+    <motor   class="smr/cst" name="cst_wrist3"  joint="wrist3_joint" />
+  </actuator>
+  <keyframe>
+    <!-- ctrl 12 维：前 6 个 CSP（关节角，单位 rad），后 6 个 CST（力矩，单位 N·m）；
+         home 位置下 CST 力矩为 0，CSP 关节角全 0 -->
+    <key name="home" qpos="0 0 0 0 0 0" ctrl="0 0 0 0 0 0  0 0 0 0 0 0" />
+  </keyframe>
+</mujoco>

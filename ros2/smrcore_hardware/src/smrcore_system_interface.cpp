@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cmath>
 #include <stdexcept>
+#include <unordered_map>
 
 #include "hardware_interface/types/hardware_interface_type_values.hpp"
 #include "pluginlib/class_list_macros.hpp"
@@ -18,6 +19,18 @@ bool InterfaceNameEquals(const std::string &full_name,
                          const std::string &interface_name)
 {
     return full_name == joint_name + "/" + interface_name;
+}
+
+bool ParseBoolParameter(const std::unordered_map<std::string, std::string> &params,
+                        const std::string &name,
+                        bool default_value)
+{
+    const auto it = params.find(name);
+    if (it == params.end())
+    {
+        return default_value;
+    }
+    return it->second == "true" || it->second == "1" || it->second == "True";
 }
 
 } // namespace
@@ -42,6 +55,8 @@ SMRcoreSystemInterface::on_init(const hardware_interface::HardwareInfo &info)
     {
         robot_ip_ = it->second;
     }
+    log_passthrough_commands_ =
+        ParseBoolParameter(info.hardware_parameters, "log_passthrough_commands", false);
 
     for (std::size_t i = 0; i < kNumJoints; ++i)
     {
@@ -101,6 +116,8 @@ hardware_interface::CallbackReturn SMRcoreSystemInterface::on_configure(
 
     RCLCPP_INFO(logger_, "SMRcore SDK 初始化完成，robot_ip='%s'",
                 robot_ip_.c_str());
+    RCLCPP_INFO(logger_, "SMRcore SDK 连接状态: %s",
+                robot_->IsConnected() ? "connected" : "not connected");
     return hardware_interface::CallbackReturn::SUCCESS;
 }
 
@@ -114,6 +131,36 @@ hardware_interface::CallbackReturn SMRcoreSystemInterface::on_activate(
 
     try
     {
+        if (robot_ip_.empty())
+        {
+            RCLCPP_INFO(logger_,
+                        "robot_ip 为空，按本机仿真模式自动 Recover/ClearError/Enable");
+            auto recover = robot_->Recover();
+            if (!recover.IsSuccess())
+            {
+                RCLCPP_WARN(logger_, "本机仿真自动 Recover 失败: %s",
+                            recover.GetErrorMsg().c_str());
+            }
+
+            auto clear_error = robot_->ClearError();
+            if (!clear_error.IsSuccess())
+            {
+                RCLCPP_WARN(logger_, "本机仿真自动 ClearError 失败: %s",
+                            clear_error.GetErrorMsg().c_str());
+            }
+
+            auto enable = robot_->Enable();
+            if (!enable.IsSuccess())
+            {
+                RCLCPP_WARN(logger_, "本机仿真自动 Enable 失败: %s",
+                            enable.GetErrorMsg().c_str());
+            }
+            else
+            {
+                RCLCPP_INFO(logger_, "本机仿真自动 Enable 完成");
+            }
+        }
+
         const auto state = robot_->GetState();
         CopyStateToBuffers(state);
         command_positions_ = state_positions_;
@@ -189,6 +236,15 @@ SMRcoreSystemInterface::write(const rclcpp::Time &, const rclcpp::Duration &)
     }
 
     robot_->JointPassthrough(positions, velocities);
+    if (log_passthrough_commands_ && (++write_count_ % 500 == 0))
+    {
+        RCLCPP_INFO(logger_,
+                    "JointPassthrough q=[%.3f %.3f %.3f %.3f %.3f %.3f], "
+                    "qd=[%.3f %.3f %.3f %.3f %.3f %.3f]",
+                    positions[0], positions[1], positions[2], positions[3],
+                    positions[4], positions[5], velocities[0], velocities[1],
+                    velocities[2], velocities[3], velocities[4], velocities[5]);
+    }
     return hardware_interface::return_type::OK;
 }
 

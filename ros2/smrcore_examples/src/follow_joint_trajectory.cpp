@@ -42,8 +42,8 @@ public:
         }
 
         FollowJointTrajectory::Goal goal;
-        goal.trajectory.joint_names = {"joint1", "joint2", "joint3",
-                                       "joint4", "joint5", "joint6"};
+        goal.trajectory.joint_names = {"base_joint", "shoulder_joint", "elbow_joint",
+                                       "wrist1_joint", "wrist2_joint", "wrist3_joint"};
 
         trajectory_msgs::msg::JointTrajectoryPoint start;
         start.positions = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};

@@ -68,6 +68,8 @@ private:
     rclcpp::Logger logger_ = rclcpp::get_logger("smrcore_hardware");
     std::unique_ptr<rcore::sdk::Robot> robot_;
     std::string robot_ip_;
+    bool log_passthrough_commands_ = false;
+    std::size_t write_count_ = 0;
 
     std::array<std::string, kNumJoints> joint_names_{};
     std::array<double, kNumJoints> state_positions_{};
