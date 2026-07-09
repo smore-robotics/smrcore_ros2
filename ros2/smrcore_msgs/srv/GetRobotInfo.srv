@@ -1,0 +1,7 @@
+---
+bool success
+uint16 error_code
+string message
+string robot_model
+string robot_serial_number
+string sdk_version

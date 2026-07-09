@@ -35,9 +35,20 @@ else
   EXTRA_PREFIX="${SDK_DIR};/opt/ros/${ROS_DISTRO}"
 fi
 
-colcon --log-base "$ROOT_DIR/log" build \
+BUILD_BASE="$ROOT_DIR/build"
+LOG_BASE="$ROOT_DIR/log"
+if printf '%s' "$ROOT_DIR" | LC_ALL=C grep -q '[^ -~]'; then
+  ROOT_HASH="$(printf '%s' "$ROOT_DIR" | cksum | awk '{print $1}')"
+  SAFE_COLCON_DIR="/tmp/smrcore_ros2_colcon_${USER:-user}_${ROOT_HASH}"
+  BUILD_BASE="$SAFE_COLCON_DIR/build"
+  LOG_BASE="$SAFE_COLCON_DIR/log"
+  mkdir -p "$SAFE_COLCON_DIR"
+  echo "检测到仓库路径包含非 ASCII 字符，colcon build/log 使用: $SAFE_COLCON_DIR"
+fi
+
+colcon --log-base "$LOG_BASE" build \
   --base-paths "$ROOT_DIR/ros2" \
-  --build-base "$ROOT_DIR/build" \
+  --build-base "$BUILD_BASE" \
   --install-base "$ROOT_DIR/install" \
   --symlink-install \
   --cmake-args -DCMAKE_PREFIX_PATH="$EXTRA_PREFIX"

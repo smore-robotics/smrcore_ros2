@@ -1,0 +1,13 @@
+std_msgs/Header header
+bool connected
+float64[6] positions
+float64[6] velocities
+float64[6] torques
+bool cartesian_valid
+float64[3] cartesian_position
+float64[3] cartesian_orientation
+uint8 control_mode
+string reference_frame
+uint16[] latched_error_codes
+uint16[] active_warning_codes
+uint16[] command_error_codes

@@ -1,19 +1,17 @@
 <?xml version="1.0"?>
 <package format="3">
-  <name>smrcore_examples</name>
+  <name>smrcore_sdk_server</name>
   <version>0.1.0</version>
-  <description>SMRcore ROS 2 示例包</description>
+  <description>SMRcore SDK ROS 2 action and service server.</description>
   <maintainer email="support@smore.com">Smartmore Robotics</maintainer>
   <license>Apache-2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
-  <depend>control_msgs</depend>
   <depend>geometry_msgs</depend>
   <depend>rclcpp</depend>
   <depend>rclcpp_action</depend>
   <depend>smrcore_msgs</depend>
-  <depend>trajectory_msgs</depend>
 
   <export>
     <build_type>ament_cmake</build_type>
