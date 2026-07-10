@@ -80,6 +80,15 @@ source install/setup.bash
 ros2 launch smrcore_bringup robot.launch.py robot_ip:=192.168.1.100
 ```
 
+使用 MuJoCo 仿真器时，先启动与 SDK 对应版本的仿真器，再使用完全相同的链路，
+但不传 IP 参数：
+
+```bash
+ros2 launch smrcore_bringup robot.launch.py
+```
+
+详细的下载和启动说明见 [MuJoCo 仿真](mujoco.md)。
+
 无真机时可以使用 mock 后端检查控制器和 RViz：
 
 ```bash
@@ -99,5 +108,6 @@ SDK server 运动链路建议二选一启动。
 
 - 标准轨迹控制见 [ros2_control](ros2-control.md)。
 - SDK action/service 见 [SDK server](sdk-server.md)。
-- 示例参数见仓库根目录的 `examples/README.md`。
-- MoveIt 和 Gazebo 分别见 [MoveIt 接入](moveit.md) 与 [Gazebo 仿真](gazebo.md)。
+- 示例入口索引见仓库根目录的 `examples/README.md`。
+- MoveIt、Gazebo 和 MuJoCo 分别见 [MoveIt 接入](moveit.md)、[Gazebo 仿真](gazebo.md)
+  与 [MuJoCo 仿真](mujoco.md)。

@@ -4,7 +4,7 @@ SMRcore ROS 2 接入仓库面向三类使用场景：
 
 - 使用 `ros2_control` 和 `joint_trajectory_controller` 接入 ROS 标准轨迹控制。
 - 使用 `smrcore_sdk_server` 调用 SDK 任务运动、恢复、清错、IK/FK 和状态查询能力。
-- 使用 RViz、MoveIt、Gazebo 完成模型查看、规划执行和仿真验证。
+- 使用 RViz、MoveIt、Gazebo、MuJoCo 完成模型查看、规划执行和仿真验证。
 
 推荐优先使用 ROS 标准控制面：
 
@@ -29,4 +29,5 @@ SDK action/service 是独立入口，适合复用 SDK 任务运动接口。连�
 - [RViz 可视化](rviz.md): 模型查看、RViz 参数和关节命名。
 - [MoveIt 接入](moveit.md): MoveIt demo、真机执行链路和 MoveIt 示例。
 - [Gazebo 仿真](gazebo.md): Gazebo 后端、资源路径处理和仿真控制。
+- [MuJoCo 仿真](mujoco.md): MuJoCo 仿真器下载，以及复用真机链路的 ROS 2 启动方式。
 - [完整 ROS 2 体验补齐计划](smrcore-ros2-completion-plan.md): 功能补齐过程记录。

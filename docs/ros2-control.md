@@ -43,6 +43,15 @@ ros2 launch smrcore_bringup robot.launch.py robot_ip:=192.168.1.100
 ros2 launch smrcore_bringup robot.launch.py hardware_backend:=mock use_rviz:=true
 ```
 
+使用 MuJoCo 仿真器时，先启动与 SDK 对应版本的本机仿真器，然后复用真机启动命令，
+且不传 `robot_ip`（使用默认空值）：
+
+```bash
+ros2 launch smrcore_bringup robot.launch.py
+```
+
+见 [MuJoCo 仿真](mujoco.md)。
+
 ## 发送轨迹
 
 启动 bringup 后，在另一个终端运行标准轨迹示例：
@@ -61,8 +70,6 @@ ros2 launch smrcore_examples follow_joint_trajectory.launch.py \
   duration_seconds:=6.0
 ```
 
-示例参数详见 `examples/README.md`。
-
 ## 生命周期行为
 
 - `on_init`: 校验六关节单臂 hardware description。
@@ -79,3 +86,5 @@ ros2 launch smrcore_examples follow_joint_trajectory.launch.py \
 - `hardware_backend:=real` 和 SDK server 运动入口不要默认同时控制同一台机器人。
 - Gazebo 仿真使用 `smrcore_gazebo` 启动，不需要手动以 `hardware_backend:=gazebo`
   调用 `robot.launch.py`。
+- MuJoCo 仿真器通过 SDK 本机模式连接；启动前需运行对应 SDK 版本的仿真器，并保持
+  `robot_ip` 为默认空值（不传该参数）。

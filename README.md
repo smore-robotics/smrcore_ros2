@@ -1,56 +1,87 @@
-# SMRcore ROS 2
+<div align="center">
 
-SMRcore 机器人的 ROS 2 接入仓库，提供机器人描述、`ros2_control` 硬件插件、
-MoveIt 配置、Gazebo 仿真、SDK action/service 封装和 ROS 用户侧示例。
+<img src="docs/assets/logo.png" alt="Smartmore Robotics" width="96" />
 
-本仓库是公开包装仓库，不提交 SDK 头文件或库。构建前会通过
-`scripts/download.sh` 将发布版 C++ SDK 下载到 `3rdparty/smrcore_sdk`，ROS 2
-包通过 `CMAKE_PREFIX_PATH` 查找 `smrcore_sdkConfig.cmake` 和 `smrcore::sdk`。
+# smrcore_ros2
 
-## 文档
+**ROS 2 integration for Smartmore robots.**
 
-具体安装、启动、控制链路和示例用法下放到对应文档：
+[![License](https://img.shields.io/badge/License-Apache%202.0-1f6feb.svg)](LICENSE)
 
-- [快速开始](docs/getting-started.md): 环境依赖、SDK 下载、构建和入口选择。
-- [架构](docs/architecture.md): 仓库分层、控制链路和模块职责。
-- [ros2_control](docs/ros2-control.md): 真机控制链路、launch 参数和
-  `FollowJointTrajectory` 使用方式。
-- [SDK server](docs/sdk-server.md): SDK action/service/topic 接口和启动方式。
-- [RViz 可视化](docs/rviz.md): 机器人模型查看、mock 后端和 RViz 启动。
-- [MoveIt 接入](docs/moveit.md): MoveIt demo、真机执行链路和 C++ 示例。
-- [Gazebo 仿真](docs/gazebo.md): Gazebo 后端、中文路径处理和仿真验证。
-- [示例说明](examples/README.md): `smrcore_examples` 中各示例的运行前提和参数。
+**English** · [简体中文](README.zh.md)
 
-## 模块
+</div>
 
-| 模块 | 职责 |
+---
+
+The public ROS 2 integration repository for **Smartmore robots**. It provides
+robot descriptions, a `ros2_control` hardware plugin, MoveIt configuration,
+Gazebo and MuJoCo simulation, SDK action/service wrappers, and ROS user-side
+examples.
+
+This is a public wrapper repository and does not include SDK headers or
+libraries. Before building, `scripts/download.sh` downloads the released C++
+SDK to `3rdparty/smrcore_sdk`. The ROS 2 packages locate
+`smrcore_sdkConfig.cmake` and `smrcore::sdk` through `CMAKE_PREFIX_PATH`.
+
+## Documentation
+
+Installation, startup, control flows, and examples are documented in Chinese:
+
+- [Quick start](docs/getting-started.md): prerequisites, SDK download, build,
+  and startup options.
+- [Architecture](docs/architecture.md): repository layers, control flows, and
+  module responsibilities.
+- [ros2_control](docs/ros2-control.md): physical-robot control flow, launch
+  arguments, and `FollowJointTrajectory` usage.
+- [SDK server](docs/sdk-server.md): SDK action, service, and topic interfaces.
+- [RViz visualization](docs/rviz.md): robot model viewing, mock backend, and
+  RViz startup.
+- [MoveIt integration](docs/moveit.md): MoveIt demo, physical-robot execution
+  flow, and C++ examples.
+- [Gazebo simulation](docs/gazebo.md): Gazebo backend, Chinese-path handling,
+  and simulation verification.
+- [MuJoCo simulation](docs/mujoco.md): simulator download and ROS 2 startup
+  using the same flow as a physical robot.
+- [Example index](examples/README.md): `smrcore_examples` entry points and
+  links to their module documentation.
+
+## Modules
+
+| Module | Responsibility |
 |---|---|
-| `ros2/smrcore_msgs` | ROS 2 action、service、message 接口定义 |
-| `ros2/smrcore_description` | SMR-i3 xacro、mesh、RViz 配置和关节命名 |
-| `ros2/smrcore_hardware` | 基于 `rcore::sdk::Robot` 的 `ros2_control` 硬件插件 |
-| `ros2/smrcore_bringup` | 真机或 mock 后端的 controller manager 启动编排 |
-| `ros2/smrcore_sdk_server` | 将 SDK 任务运动和状态能力封装为 ROS 2 action/service/topic |
-| `ros2/smrcore_moveit_config` | MoveIt 规划组、控制器和 RViz 配置 |
-| `ros2/smrcore_gazebo` | Gazebo Classic 仿真启动和模型资源准备 |
-| `ros2/smrcore_examples` | ROS 用户视角的控制、状态和 MoveIt 示例 |
+| `ros2/smrcore_msgs` | ROS 2 action, service, and message interfaces |
+| `ros2/smrcore_description` | SMR-i3 xacro, meshes, RViz configuration, and joint naming |
+| `ros2/smrcore_hardware` | `ros2_control` hardware plugin based on `rcore::sdk::Robot` |
+| `ros2/smrcore_bringup` | Controller-manager startup for physical or mock backends |
+| `ros2/smrcore_sdk_server` | SDK task-motion and state capabilities as ROS 2 actions, services, and topics |
+| `ros2/smrcore_moveit_config` | MoveIt planning groups, controllers, and RViz configuration |
+| `ros2/smrcore_gazebo` | Gazebo Classic startup and model-asset preparation |
+| `ros2/smrcore_examples` | User-facing control, state, and MoveIt examples |
 
-## 控制入口
+## Control Interfaces
 
-本仓库提供两类会连接机器人并下发运动指令的入口：
+This repository provides two interfaces that connect to a robot and can command
+motion:
 
-- `ros2_control` 链路：推荐作为 ROS 标准实时轨迹控制面，使用
-  `joint_trajectory_controller` 和 `FollowJointTrajectory`。
-- SDK server 链路：面向 SDK 任务运动和短操作，提供 MoveJ、MoveP、MoveL、MoveC、
-  MovePath 等 action，以及 recover、clear_error、IK/FK、状态查询等 service/topic。
+- `ros2_control`: the recommended standard ROS real-time trajectory control
+  interface, using `joint_trajectory_controller` and
+  `FollowJointTrajectory`.
+- SDK server: intended for SDK task motion and discrete operations. It provides
+  actions for MoveJ, MoveP, MoveL, MoveC, and MovePath, plus services and
+  topics for recovery, error clearing, IK/FK, and state queries.
 
-实际连接真机时按场景选择其中一类入口，不要默认同时启动两套运动后端控制同一台机器人。
+When controlling a physical robot, choose the appropriate interface for the
+task. Do not start both motion backends to control the same robot by default.
 
-## 安全提示
+## Safety
 
-机器人是危险设备。运行任何运动示例前，请确认目标点对当前机器人、工具、负载和工作空间
-都是安全的，并确认急停可触达、工作空间已清空。
+> Robots are hazardous machines. Before running any motion example, verify the
+> target is safe for the current robot, tool, payload, and workspace. Confirm
+> the emergency stop is reachable and the workspace is clear.
 
-## 许可证
+## License
 
-本仓库以 [Apache License 2.0](LICENSE) 发布。预编译 SDK release 制品中的第三方组件
-许可证与归属声明随对应 release 压缩包提供。
+This repository is released under the [Apache License 2.0](LICENSE). Third-party
+components included in prebuilt SDK release artifacts carry their license and
+attribution notices in the corresponding release archive.

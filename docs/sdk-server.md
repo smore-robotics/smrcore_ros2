@@ -15,6 +15,15 @@ ros2 launch smrcore_sdk_server sdk_server.launch.py robot_ip:=192.168.1.100
 
 `robot_ip:=` 为空时表示本机/仿真模式。
 
+使用 MuJoCo 仿真器时，先启动与 SDK 对应版本的本机仿真器，再不传 `robot_ip`
+启动（使用默认空值）：
+
+```bash
+ros2 launch smrcore_sdk_server sdk_server.launch.py
+```
+
+见 [MuJoCo 仿真](mujoco.md)。
+
 Launch 参数：
 
 | 参数 | 默认值 | 说明 |
@@ -85,6 +94,83 @@ ros2 launch smrcore_examples recover_clear_error.launch.py
 ```bash
 ros2 launch smrcore_examples robot_status.launch.py
 ```
+
+## 示例参数
+
+`smrcore_examples` 中的 SDK 示例节点默认使用 `/smrcore_sdk_server/*` 接口。默认
+launch 文件没有全部声明透传参数；需要覆盖节点参数时，可以使用
+`ros2 run ... --ros-args -p 参数名:=参数值`。
+
+### MoveJ 示例
+
+```bash
+ros2 launch smrcore_examples sdk_movej_action.launch.py
+```
+
+| 参数 | 默认值 | 说明 |
+|---|---|---|
+| `action_name` | `/smrcore_sdk_server/move_j` | 目标 action |
+| `target_positions` | `[0.0, -1.5708, -1.5708, 0.0, 0.0, 0.0]` | 6 轴目标关节角，单位 rad |
+| `waypoint_name` | `""` | 非空时使用 SDK waypoint 名称 |
+| `velocity_scale` | `0.2` | 速度缩放 |
+
+自定义关节目标示例：
+
+```bash
+ros2 run smrcore_examples sdk_movej_action --ros-args \
+  -p target_positions:="[0.0, -1.2, -1.4, 0.0, 0.0, 0.0]" \
+  -p velocity_scale:=0.1
+```
+
+### MoveP 示例
+
+```bash
+ros2 launch smrcore_examples sdk_movep_action.launch.py
+```
+
+| 参数 | 默认值 | 说明 |
+|---|---|---|
+| `action_name` | `/smrcore_sdk_server/move_p` | 目标 action |
+| `target_xyz_rpy` | `[0.3, 0.0, 0.4, 0.0, 0.0, 0.0]` | 目标位姿，`x y z roll pitch yaw` |
+| `frame_id` | `base` | 目标位姿参考坐标系 |
+| `velocity_scale` | `0.2` | 速度缩放 |
+
+自定义笛卡尔目标示例：
+
+```bash
+ros2 run smrcore_examples sdk_movep_action --ros-args \
+  -p target_xyz_rpy:="[0.3, 0.0, 0.35, 0.0, 0.0, 0.0]" \
+  -p velocity_scale:=0.1
+```
+
+### MoveL 示例
+
+```bash
+ros2 launch smrcore_examples sdk_movel_action.launch.py
+```
+
+参数与 MoveP 示例相同，但目标 action 为 `/smrcore_sdk_server/move_l`。
+
+### 状态订阅示例
+
+```bash
+ros2 launch smrcore_examples robot_status.launch.py
+```
+
+| 参数 | 默认值 | 说明 |
+|---|---|---|
+| `topic_name` | `/smrcore_sdk_server/robot_status` | 订阅的状态 topic |
+
+### 恢复清错示例
+
+```bash
+ros2 launch smrcore_examples recover_clear_error.launch.py
+```
+
+| 参数 | 默认值 | 说明 |
+|---|---|---|
+| `recover_service` | `/smrcore_sdk_server/recover` | recover service |
+| `clear_error_service` | `/smrcore_sdk_server/clear_error` | clear_error service |
 
 ## 速度参数
 
