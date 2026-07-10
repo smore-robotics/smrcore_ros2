@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<robot name="smri3" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:arg name="robot_ip" default=""/>
+  <xacro:arg name="hardware_backend" default="real"/>
+  <xacro:arg name="log_passthrough_commands" default="false"/>
+
+  <xacro:include filename="$(find smrcore_description)/urdf/materials.xacro"/>
+  <xacro:include filename="$(find smrcore_description)/urdf/smrcore_macro.xacro"/>
+  <xacro:include filename="$(find smrcore_description)/urdf/smri3.ros2_control.xacro"/>
+
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <cylinder radius="0.16" length="0.08"/>
+      </geometry>
+      <material name="smrcore_dark"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.16" length="0.08"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="5.0"/>
+      <inertia ixx="0.05" ixy="0.0" ixz="0.0" iyy="0.05" iyz="0.0" izz="0.05"/>
+    </inertial>
+  </link>
+
+  <xacro:smrcore_link name="link1" radius="0.07" length="0.25" color="smrcore_blue"/>
+  <xacro:smrcore_link name="link2" radius="0.06" length="0.30" color="smrcore_light"/>
+  <xacro:smrcore_link name="link3" radius="0.055" length="0.28" color="smrcore_blue"/>
+  <xacro:smrcore_link name="link4" radius="0.045" length="0.22" color="smrcore_light"/>
+  <xacro:smrcore_link name="link5" radius="0.04" length="0.16" color="smrcore_blue"/>
+  <xacro:smrcore_link name="link6" radius="0.035" length="0.12" color="smrcore_light"/>
+  <link name="tool0"/>
+
+  <joint name="base_joint" type="revolute">
+    <parent link="base_link"/>
+    <child link="link1"/>
+    <origin xyz="0 0 0.08" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-6.283185307" upper="6.283185307" effort="200" velocity="3.14"/>
+  </joint>
+  <joint name="shoulder_joint" type="revolute">
+    <parent link="link1"/>
+    <child link="link2"/>
+    <origin xyz="0 0 0.25" rpy="0 1.570796327 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-6.283185307" upper="6.283185307" effort="200" velocity="3.14"/>
+  </joint>
+  <joint name="elbow_joint" type="revolute">
+    <parent link="link2"/>
+    <child link="link3"/>
+    <origin xyz="0 0 0.30" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-6.283185307" upper="6.283185307" effort="200" velocity="3.14"/>
+  </joint>
+  <joint name="wrist1_joint" type="revolute">
+    <parent link="link3"/>
+    <child link="link4"/>
+    <origin xyz="0 0 0.28" rpy="1.570796327 0 0"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="-6.283185307" upper="6.283185307" effort="120" velocity="3.14"/>
+  </joint>
+  <joint name="wrist2_joint" type="revolute">
+    <parent link="link4"/>
+    <child link="link5"/>
+    <origin xyz="0 0 0.22" rpy="0 1.570796327 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-6.283185307" upper="6.283185307" effort="120" velocity="3.14"/>
+  </joint>
+  <joint name="wrist3_joint" type="revolute">
+    <parent link="link5"/>
+    <child link="link6"/>
+    <origin xyz="0 0 0.16" rpy="1.570796327 0 0"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="-6.283185307" upper="6.283185307" effort="80" velocity="3.14"/>
+  </joint>
+  <joint name="tool0_fixed" type="fixed">
+    <parent link="link6"/>
+    <child link="tool0"/>
+    <origin xyz="0 0 0.12" rpy="0 0 0"/>
+  </joint>
+
+  <xacro:smri3_ros2_control robot_ip="$(arg robot_ip)" hardware_backend="$(arg hardware_backend)" log_passthrough_commands="$(arg log_passthrough_commands)"/>
+</robot>

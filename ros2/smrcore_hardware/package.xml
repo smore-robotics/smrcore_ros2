@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>smrcore_hardware</name>
+  <version>0.1.0</version>
+  <description>SMRcore ros2_control 硬件插件</description>
+  <maintainer email="support@smore.com">Smartmore Robotics</maintainer>
+  <license>Apache-2.0</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <depend>hardware_interface</depend>
+  <depend>pluginlib</depend>
+  <depend>rclcpp</depend>
+  <depend>rclcpp_lifecycle</depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

@@ -1,0 +1,6 @@
+float64[6] joint_positions
+---
+bool success
+uint16 error_code
+string message
+geometry_msgs/PoseStamped pose

@@ -1,0 +1,8 @@
+<library path="smrcore_hardware">
+  <class
+    name="smrcore_hardware/SMRcoreSystemInterface"
+    type="smrcore_hardware::SMRcoreSystemInterface"
+    base_class_type="hardware_interface::SystemInterface">
+    <description>SMRcore 单臂 ros2_control 硬件插件</description>
+  </class>
+</library>

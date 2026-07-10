@@ -1,0 +1,14 @@
+float64[6] target_positions
+string waypoint_name
+float64 velocity_scale
+
+---
+bool success
+uint16 error_code
+string message
+---
+int32 task_id
+int32 status
+float32 progress
+uint16 error_code
+string message

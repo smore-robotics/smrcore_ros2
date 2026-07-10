@@ -1,0 +1,6 @@
+float64 mass
+float64[3] center_of_mass
+---
+bool success
+uint16 error_code
+string message
