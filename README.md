@@ -1,48 +1,56 @@
 # SMRcore ROS 2
 
-SMRcore 机器人 ROS 2 接入仓库。
+SMRcore 机器人的 ROS 2 接入仓库，提供机器人描述、`ros2_control` 硬件插件、
+MoveIt 配置、Gazebo 仿真、SDK action/service 封装和 ROS 用户侧示例。
 
-本仓库是公开包装仓库，不提交 SDK 头文件或库。`scripts/download.sh` 会把
-发布版 C++ SDK 下载到 `3rdparty/smrcore_sdk`，ROS 2 包通过
-`CMAKE_PREFIX_PATH` 查找 `smrcore_sdkConfig.cmake` 和 `smrcore::sdk`。
+本仓库是公开包装仓库，不提交 SDK 头文件或库。构建前会通过
+`scripts/download.sh` 将发布版 C++ SDK 下载到 `3rdparty/smrcore_sdk`，ROS 2
+包通过 `CMAKE_PREFIX_PATH` 查找 `smrcore_sdkConfig.cmake` 和 `smrcore::sdk`。
 
-## 包结构
+## 文档
 
-- `ros2/smrcore_hardware`: 基于 `rcore::sdk::Robot` 的 `ros2_control`
-  硬件插件。
-- `ros2/smrcore_description`: xacro 机器人描述和 ros2_control 配置。
-- `ros2/smrcore_bringup`: controller manager 与 robot_state_publisher
-  启动编排。
-- `ros2/smrcore_examples`: ROS 用户视角示例。
+具体安装、启动、控制链路和示例用法下放到对应文档：
 
-V1 只支持单臂会话。真机 `ros2_control` 后端要求 SDK/控制器版本支持
-`Robot::JointPassthrough(q, qd)`；正式后端不会用 `ServoJ()` 代替透明透传。
+- [快速开始](docs/getting-started.md): 环境依赖、SDK 下载、构建和入口选择。
+- [架构](docs/architecture.md): 仓库分层、控制链路和模块职责。
+- [ros2_control](docs/ros2-control.md): 真机控制链路、launch 参数和
+  `FollowJointTrajectory` 使用方式。
+- [SDK server](docs/sdk-server.md): SDK action/service/topic 接口和启动方式。
+- [RViz 可视化](docs/rviz.md): 机器人模型查看、mock 后端和 RViz 启动。
+- [MoveIt 接入](docs/moveit.md): MoveIt demo、真机执行链路和 C++ 示例。
+- [Gazebo 仿真](docs/gazebo.md): Gazebo 后端、中文路径处理和仿真验证。
+- [示例说明](examples/README.md): `smrcore_examples` 中各示例的运行前提和参数。
 
-## 构建
+## 模块
 
-先安装 ROS 2 依赖：
+| 模块 | 职责 |
+|---|---|
+| `ros2/smrcore_msgs` | ROS 2 action、service、message 接口定义 |
+| `ros2/smrcore_description` | SMR-i3 xacro、mesh、RViz 配置和关节命名 |
+| `ros2/smrcore_hardware` | 基于 `rcore::sdk::Robot` 的 `ros2_control` 硬件插件 |
+| `ros2/smrcore_bringup` | 真机或 mock 后端的 controller manager 启动编排 |
+| `ros2/smrcore_sdk_server` | 将 SDK 任务运动和状态能力封装为 ROS 2 action/service/topic |
+| `ros2/smrcore_moveit_config` | MoveIt 规划组、控制器和 RViz 配置 |
+| `ros2/smrcore_gazebo` | Gazebo Classic 仿真启动和模型资源准备 |
+| `ros2/smrcore_examples` | ROS 用户视角的控制、状态和 MoveIt 示例 |
 
-```bash
-sudo apt install ros-humble-ros2-control ros-humble-ros2-controllers ros-humble-xacro
-```
+## 控制入口
 
-```bash
-./scripts/build.sh
-```
+本仓库提供两类会连接机器人并下发运动指令的入口：
 
-Or from an existing ROS 2 workspace:
+- `ros2_control` 链路：推荐作为 ROS 标准实时轨迹控制面，使用
+  `joint_trajectory_controller` 和 `FollowJointTrajectory`。
+- SDK server 链路：面向 SDK 任务运动和短操作，提供 MoveJ、MoveP、MoveL、MoveC、
+  MovePath 等 action，以及 recover、clear_error、IK/FK、状态查询等 service/topic。
 
-```bash
-colcon build --symlink-install \
-  --base-paths /path/to/smrcore_ros2/ros2 \
-  --cmake-args -DCMAKE_PREFIX_PATH=/path/to/smrcore_ros2/3rdparty/smrcore_sdk
-```
+实际连接真机时按场景选择其中一类入口，不要默认同时启动两套运动后端控制同一台机器人。
 
-## 启动
+## 安全提示
 
-```bash
-source install/setup.bash
-ros2 launch smrcore_bringup robot.launch.py robot_ip:=192.168.1.100
-```
+机器人是危险设备。运行任何运动示例前，请确认目标点对当前机器人、工具、负载和工作空间
+都是安全的，并确认急停可触达、工作空间已清空。
 
-`robot_ip:=` 为空时表示本机/仿真模式。
+## 许可证
+
+本仓库以 [Apache License 2.0](LICENSE) 发布。预编译 SDK release 制品中的第三方组件
+许可证与归属声明随对应 release 压缩包提供。

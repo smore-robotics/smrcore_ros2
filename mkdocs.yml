@@ -5,3 +5,7 @@ nav:
   - 快速开始: getting-started.md
   - 架构: architecture.md
   - ros2_control: ros2-control.md
+  - SDK server: sdk-server.md
+  - RViz 可视化: rviz.md
+  - MoveIt 接入: moveit.md
+  - Gazebo 仿真: gazebo.md
