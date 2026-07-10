@@ -6,6 +6,7 @@
   <xacro:arg name="robot_ip" default=""/>
   <xacro:arg name="hardware_backend" default="real"/>
   <xacro:arg name="log_passthrough_commands" default="false"/>
+  <xacro:arg name="gazebo_controllers_file" default="$(find smrcore_hardware)/config/smri3_gazebo_controllers.yaml"/>
   <xacro:property name="hardware_backend_value" value="$(arg hardware_backend)"/>
   <xacro:include filename="$(find smrcore_description)/urdf/smri3.ros2_control.xacro"/>
   <link
@@ -416,14 +417,14 @@
         xyz="0 0 0"
         rpy="0 0 0" />
       <mass
-        value="0" />
+        value="0.001" />
       <inertia
-        ixx="0"
+        ixx="1e-06"
         ixy="0"
         ixz="0"
-        iyy="0"
+        iyy="1e-06"
         iyz="0"
-        izz="0" />
+        izz="1e-06" />
     </inertial>
     <visual>
       <origin
@@ -462,11 +463,28 @@
     <axis
       xyz="0 0 0" />
   </joint>
+  <xacro:if value="${hardware_backend_value == 'gazebo'}">
+    <!-- Keep Gazebo's URDF root inertial-free without changing the default
+         exported tree used by RViz, MoveIt, and the real hardware backend. -->
+    <link name="world"/>
+    <joint name="world_to_base_link" type="fixed">
+      <parent link="world"/>
+      <child link="base_link"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </joint>
+  </xacro:if>
   <xacro:smri3_ros2_control robot_ip="$(arg robot_ip)" hardware_backend="$(arg hardware_backend)" log_passthrough_commands="$(arg log_passthrough_commands)"/>
   <xacro:if value="${hardware_backend_value == 'gazebo'}">
+    <gazebo reference="base_link">
+      <!-- The exported base collision mesh slightly intersects the ground and
+           the arm has no external fixture in URDF. Keep the base kinematic in
+           Gazebo so position-control tests do not drift or chatter. -->
+      <gravity>false</gravity>
+      <kinematic>true</kinematic>
+    </gazebo>
     <gazebo>
       <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
-        <parameters>$(find smrcore_hardware)/config/smri3_controllers.yaml</parameters>
+        <parameters>$(arg gazebo_controllers_file)</parameters>
       </plugin>
     </gazebo>
   </xacro:if>

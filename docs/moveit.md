@@ -28,5 +28,11 @@ MoveIt C++ 示例：
 ros2 launch smrcore_examples moveit_joint_goal.launch.py
 ```
 
+如果只启动 demo 后运行示例，`move_group` 报
+`Start state appears to be in collision`，并显示 `tool0_link` 与
+`distal_wrist_link` 碰撞，优先检查 SRDF 里的自碰撞矩阵。真机全 0 位姿本身应为
+合法位姿；该报错通常来自末端导出 collision mesh 与腕部 link 的保守碰撞检测，而不是
+机械臂真实发生干涉。当前配置已在 SRDF 中禁用这对 link 的自碰撞检测。
+
 该示例需要系统安装 `moveit_ros_planning_interface`。如果本机未安装该依赖，仓库仍可
 构建，示例可执行文件会被跳过。
